@@ -1,1 +1,27 @@
-console.log("Starting")
+import fastify from "fastify";
+import { prisma } from "./lib/prisma";
+import { createTrip } from "./routes/create-trip";
+import { serializerCompiler, validatorCompiler } from "fastify-type-provider-zod";
+import { confirmTrip } from "./routes/confirm-trip";
+import cors from '@fastify/cors'
+import { confirmParticipants } from "./routes/confirm-participant";
+import { createActivity } from "./routes/create-activity";
+import { getActivities } from "./routes/get-activities";
+
+const app = fastify()
+
+app.register(cors, {
+    origin: ['*'],
+})
+
+app.setValidatorCompiler(validatorCompiler);
+app.setSerializerCompiler(serializerCompiler);
+
+app.register(createTrip)
+app.register(confirmTrip)
+app.register(confirmParticipants)
+app.register(createActivity)
+app.register(getActivities)
+app.listen({port: 3333}).then(() => {
+    console.log("Server listening on port 3333");
+});
